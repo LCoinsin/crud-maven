@@ -5,10 +5,14 @@ import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
+import com.jee.crud.repository.CommandRepository;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 import org.junit.Assert;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -26,6 +30,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 class CrudApplicationTests {
+    @Autowired
+    private CommandRepository commandRepository;
 
 /*    @Test
     public void testApi() {

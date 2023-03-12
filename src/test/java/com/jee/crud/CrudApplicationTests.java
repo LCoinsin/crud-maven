@@ -5,7 +5,15 @@ import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
+
+import com.jee.crud.model.Book;
+import com.jee.crud.model.Command;
+import com.jee.crud.model.Customer;
+import com.jee.crud.model.PaymentStatusCommand;
+import com.jee.crud.repository.BookRepository;
 import com.jee.crud.repository.CommandRepository;
+import com.jee.crud.repository.CustomerRepository;
+import com.jee.crud.repository.PaymentStatusCommandRepository;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -32,6 +42,15 @@ import static org.junit.jupiter.api.Assertions.fail;
 class CrudApplicationTests {
     @Autowired
     private CommandRepository commandRepository;
+    
+    @Autowired
+    private PaymentStatusCommandRepository paymentStatusCommandRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
 /*    @Test
     public void testApi() {
@@ -154,7 +173,7 @@ class CrudApplicationTests {
         // Vérifier qu'il s'agit d'un JSON valide
         
         	//assertEquals("", jsonResponse);
-        assertEquals("[]", jsonResponse);
+        assertEquals("[{\"id\":1,\"paymentStatusCommand\":{\"id\":6,\"state\":false},\"book\":{\"isbn\":1,\"title\":\"diam dictum sapien. Aenean\",\"publication\":\"05/06/02\",\"price\":45,\"author\":{\"id\":23,\"name\":\"Palmer Bakhuizen\",\"phone\":\"08 11 31 42 41\",\"email\":\"commodo.hendrerit@outlook.couk\",\"address\":\"Ap #116-9936 Eu Rd.\",\"country\":\"Belgium\",\"city\":\"Sotteville-ls-Rouen\"},\"genre\":\"Fantasy Humour\"},\"quantity\":2,\"customer\":{\"id\":1,\"name\":\"Flynn Burt\",\"email\":\"amet@aol.fr\",\"address\":\"Ap #325-3166 Faucibus St.\",\"city\":\"Gojal Upper Hunza\",\"country\":\"Spain\"}},{\"id\":2,\"paymentStatusCommand\":{\"id\":6,\"state\":false},\"book\":{\"isbn\":2,\"title\":\"quam quis diam. Pellentesque\",\"publication\":\"09/14/22\",\"price\":19,\"author\":{\"id\":18,\"name\":\"Luke \",\"phone\":\"05 35 58 51 13\",\"email\":\"neque@yahoo.com\",\"address\":\"889-7850 Nonummy St.\",\"country\":\"France\",\"city\":\"Pau\"},\"genre\":\"Adventure Crime\"},\"quantity\":3,\"customer\":{\"id\":1,\"name\":\"Flynn Burt\",\"email\":\"amet@aol.fr\",\"address\":\"Ap #325-3166 Faucibus St.\",\"city\":\"Gojal Upper Hunza\",\"country\":\"Spain\"}},{\"id\":3,\"paymentStatusCommand\":{\"id\":6,\"state\":false},\"book\":{\"isbn\":4,\"title\":\"sed, hendrerit a, arcu.\",\"publication\":\"04/05/20\",\"price\":20,\"author\":{\"id\":12,\"name\":\"Ulysses van der Bosch\",\"phone\":\"01 69 05 15 56\",\"email\":\"pellentesque.a@icloud.org\",\"address\":\"875-1836 Ut St.\",\"country\":\"Belgium\",\"city\":\"Quenast\"},\"genre\":\"Humour Horror\"},\"quantity\":1,\"customer\":{\"id\":1,\"name\":\"Flynn Burt\",\"email\":\"amet@aol.fr\",\"address\":\"Ap #325-3166 Faucibus St.\",\"city\":\"Gojal Upper Hunza\",\"country\":\"Spain\"}},{\"id\":4,\"paymentStatusCommand\":{\"id\":1,\"state\":true},\"book\":{\"isbn\":12,\"title\":\"Maecenas malesuada fringilla est.\",\"publication\":\"07/26/00\",\"price\":5,\"author\":{\"id\":7,\"name\":\"Damian Archambault\",\"phone\":\"04 87 64 47 92\",\"email\":\"interdum.libero.dui@protonmail.com\",\"address\":\"3301 Nonummy St.\",\"country\":\"Belgium\",\"city\":\"Vierzon\"},\"genre\":\"Historical Fantasy\"},\"quantity\":2,\"customer\":{\"id\":4,\"name\":\"Aladdin Harper\",\"email\":\"lobortis.quis.pede@yahoo.com\",\"address\":\"6710 Purus. Road\",\"city\":\"Santa Rita\",\"country\":\"Ireland\"}},{\"id\":5,\"paymentStatusCommand\":{\"id\":1,\"state\":true},\"book\":{\"isbn\":31,\"title\":\"egestas. Aliquam fringilla cursus\",\"publication\":\"06/08/20\",\"price\":36,\"author\":{\"id\":21,\"name\":\"Aphrodite \",\"phone\":\"05 63 75 63 08\",\"email\":\"tempor.bibendum@icloud.net\",\"address\":\"Ap #717-1130 Tellus Ave\",\"country\":\"Belgium\",\"city\":\"Orp-Jauche\"},\"genre\":\"Adventure Crime\"},\"quantity\":3,\"customer\":{\"id\":4,\"name\":\"Aladdin Harper\",\"email\":\"lobortis.quis.pede@yahoo.com\",\"address\":\"6710 Purus. Road\",\"city\":\"Santa Rita\",\"country\":\"Ireland\"}},{\"id\":6,\"paymentStatusCommand\":{\"id\":4,\"state\":true},\"book\":{\"isbn\":36,\"title\":\"massa. Quisque porttitor eros\",\"publication\":\"12/01/02\",\"price\":1,\"author\":{\"id\":24,\"name\":\"Raya Timmermans\",\"phone\":\"08 41 10 44 38\",\"email\":\"cursus.vestibulum@protonmail.com\",\"address\":\"686-1744 Lectus Road\",\"country\":\"Belgium\",\"city\":\"Vertou\"},\"genre\":\"Historical Fantasy\"},\"quantity\":3,\"customer\":{\"id\":6,\"name\":\"Stephanie Mcgee\",\"email\":\"donec.at@aol.fr\",\"address\":\"Ap #197-9850 Quisque Rd.\",\"city\":\"Tacoma\",\"country\":\"Pakistan\"}},{\"id\":7,\"paymentStatusCommand\":{\"id\":1,\"state\":true},\"book\":{\"isbn\":35,\"title\":\"Curae Phasellus ornare. Fusce\",\"publication\":\"04/06/13\",\"price\":8,\"author\":{\"id\":23,\"name\":\"Palmer Bakhuizen\",\"phone\":\"08 11 31 42 41\",\"email\":\"commodo.hendrerit@outlook.couk\",\"address\":\"Ap #116-9936 Eu Rd.\",\"country\":\"Belgium\",\"city\":\"Sotteville-ls-Rouen\"},\"genre\":\"Classics Adventure\"},\"quantity\":3,\"customer\":{\"id\":4,\"name\":\"Aladdin Harper\",\"email\":\"lobortis.quis.pede@yahoo.com\",\"address\":\"6710 Purus. Road\",\"city\":\"Santa Rita\",\"country\":\"Ireland\"}},{\"id\":8,\"paymentStatusCommand\":{\"id\":1,\"state\":true},\"book\":{\"isbn\":40,\"title\":\"nec ante. Maecenas mi\",\"publication\":\"06/18/02\",\"price\":11,\"author\":{\"id\":25,\"name\":\"Clinton Lachapelle\",\"phone\":\"02 53 53 45 37\",\"email\":\"vivamus.euismod.urna@aol.com\",\"address\":\"266-3129 Est Ave\",\"country\":\"France\",\"city\":\"Doel\"},\"genre\":\"Fantasy Humour\"},\"quantity\":2,\"customer\":{\"id\":4,\"name\":\"Aladdin Harper\",\"email\":\"lobortis.quis.pede@yahoo.com\",\"address\":\"6710 Purus. Road\",\"city\":\"Santa Rita\",\"country\":\"Ireland\"}},{\"id\":9,\"paymentStatusCommand\":{\"id\":4,\"state\":true},\"book\":{\"isbn\":17,\"title\":\"a feugiat tellus lorem\",\"publication\":\"06/18/23\",\"price\":9,\"author\":{\"id\":22,\"name\":\"Elton \",\"phone\":\"01 72 88 35 40\",\"email\":\"pharetra.ut@hotmail.ca\",\"address\":\"248-2866 Erat Avenue\",\"country\":\"Belgium\",\"city\":\"Sint-Amandsberg\"},\"genre\":\"Humour Horror\"},\"quantity\":1,\"customer\":{\"id\":6,\"name\":\"Stephanie Mcgee\",\"email\":\"donec.at@aol.fr\",\"address\":\"Ap #197-9850 Quisque Rd.\",\"city\":\"Tacoma\",\"country\":\"Pakistan\"}},{\"id\":10,\"paymentStatusCommand\":{\"id\":3,\"state\":true},\"book\":{\"isbn\":36,\"title\":\"massa. Quisque porttitor eros\",\"publication\":\"12/01/02\",\"price\":1,\"author\":{\"id\":24,\"name\":\"Raya Timmermans\",\"phone\":\"08 41 10 44 38\",\"email\":\"cursus.vestibulum@protonmail.com\",\"address\":\"686-1744 Lectus Road\",\"country\":\"Belgium\",\"city\":\"Vertou\"},\"genre\":\"Historical Fantasy\"},\"quantity\":3,\"customer\":{\"id\":2,\"name\":\"Kirby Walls\",\"email\":\"tortor.at@protonmail.ca\",\"address\":\"Ap #851-815 Rutrum Street\",\"city\":\"Boryeong\",\"country\":\"Costa Rica\"}},{\"id\":11,\"paymentStatusCommand\":{\"id\":4,\"state\":true},\"book\":{\"isbn\":31,\"title\":\"egestas. Aliquam fringilla cursus\",\"publication\":\"06/08/20\",\"price\":36,\"author\":{\"id\":21,\"name\":\"Aphrodite \",\"phone\":\"05 63 75 63 08\",\"email\":\"tempor.bibendum@icloud.net\",\"address\":\"Ap #717-1130 Tellus Ave\",\"country\":\"Belgium\",\"city\":\"Orp-Jauche\"},\"genre\":\"Adventure Crime\"},\"quantity\":3,\"customer\":{\"id\":6,\"name\":\"Stephanie Mcgee\",\"email\":\"donec.at@aol.fr\",\"address\":\"Ap #197-9850 Quisque Rd.\",\"city\":\"Tacoma\",\"country\":\"Pakistan\"}},{\"id\":12,\"paymentStatusCommand\":{\"id\":5,\"state\":false},\"book\":{\"isbn\":12,\"title\":\"Maecenas malesuada fringilla est.\",\"publication\":\"07/26/00\",\"price\":5,\"author\":{\"id\":7,\"name\":\"Damian Archambault\",\"phone\":\"04 87 64 47 92\",\"email\":\"interdum.libero.dui@protonmail.com\",\"address\":\"3301 Nonummy St.\",\"country\":\"Belgium\",\"city\":\"Vierzon\"},\"genre\":\"Historical Fantasy\"},\"quantity\":2,\"customer\":{\"id\":2,\"name\":\"Kirby Walls\",\"email\":\"tortor.at@protonmail.ca\",\"address\":\"Ap #851-815 Rutrum Street\",\"city\":\"Boryeong\",\"country\":\"Costa Rica\"}},{\"id\":13,\"paymentStatusCommand\":{\"id\":5,\"state\":false},\"book\":{\"isbn\":17,\"title\":\"a feugiat tellus lorem\",\"publication\":\"06/18/23\",\"price\":9,\"author\":{\"id\":22,\"name\":\"Elton \",\"phone\":\"01 72 88 35 40\",\"email\":\"pharetra.ut@hotmail.ca\",\"address\":\"248-2866 Erat Avenue\",\"country\":\"Belgium\",\"city\":\"Sint-Amandsberg\"},\"genre\":\"Humour Horror\"},\"quantity\":1,\"customer\":{\"id\":2,\"name\":\"Kirby Walls\",\"email\":\"tortor.at@protonmail.ca\",\"address\":\"Ap #851-815 Rutrum Street\",\"city\":\"Boryeong\",\"country\":\"Costa Rica\"}},{\"id\":14,\"paymentStatusCommand\":{\"id\":6,\"state\":false},\"book\":{\"isbn\":8,\"title\":\"elementum sem, vitae aliquam\",\"publication\":\"06/17/08\",\"price\":7,\"author\":{\"id\":3,\"name\":\"Yvette \",\"phone\":\"07 56 05 44 74\",\"email\":\"at.augue@aol.org\",\"address\":\"P.O. Box 761, 5634 Quam. Ave\",\"country\":\"France\",\"city\":\"Strasbourg\"},\"genre\":\"Fantasy Humour\"},\"quantity\":2,\"customer\":{\"id\":1,\"name\":\"Flynn Burt\",\"email\":\"amet@aol.fr\",\"address\":\"Ap #325-3166 Faucibus St.\",\"city\":\"Gojal Upper Hunza\",\"country\":\"Spain\"}},{\"id\":15,\"paymentStatusCommand\":{\"id\":4,\"state\":true},\"book\":{\"isbn\":19,\"title\":\"est. Mauris eu turpis.\",\"publication\":\"08/26/01\",\"price\":28,\"author\":{\"id\":13,\"name\":\"Gloria Rademaker\",\"phone\":\"02 37 74 68 24\",\"email\":\"erat.vivamus@outlook.com\",\"address\":\"P.O. Box 364, 9122 Eget, St.\",\"country\":\"Belgium\",\"city\":\"Bastia\"},\"genre\":\"Crime Historical\"},\"quantity\":3,\"customer\":{\"id\":6,\"name\":\"Stephanie Mcgee\",\"email\":\"donec.at@aol.fr\",\"address\":\"Ap #197-9850 Quisque Rd.\",\"city\":\"Tacoma\",\"country\":\"Pakistan\"}}]", jsonResponse);
          System.out.println("Le test command !");
         	
         }
@@ -290,9 +309,58 @@ class CrudApplicationTests {
        System.out.println("Le test Status Id !");
         	
         }
+    /*
+    @Test
+    public void testDelete() throws IOException {
+        //Recupere la base avant le delete
+        List<Command> commandBeforeDelete = commandRepository.findAll();
+        assertEquals(15, commandBeforeDelete.size());
+
+        String apiUrl = "http://localhost:8080/command/15";
+        URL url = new URL(apiUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("DELETE");
+
+        // Vérifier le code HTTP de la réponse
+        int statusCode = connection.getResponseCode();
+        assertEquals(200, statusCode);
+
+        //Recupere la base après le delete
+        List<Command> commandAfterDelete = commandRepository.findAll();
+        assertEquals(14, commandAfterDelete.size());
+        System.out.println("Le test delete réussi !");
+
+        //Remettre la base comme avant
+        PaymentStatusCommand paymentStatusCommandById = paymentStatusCommandRepository.findById(4).orElse(null);
+        Book bookById = bookRepository.findById("est. Mauris eu turpis.").orElse(null);
+        Customer customerById = customerRepository.findById(6L).orElse(null);
+        Command command = new Command(paymentStatusCommandById, bookById, 3, customerById);
+        command.setId(15);
+        commandRepository.save(command);
+        List<Command> commandNewDelete = commandRepository.findAll();
+        assertEquals(15, commandNewDelete.size());
+        System.out.println("La base a bien été remis comme avant !");
+
+    }
+    */
     
-    
-    
+    @Test
+    public void testPostCommand() throws IOException {
+        //Recupere la base avant le delete
+    	   //Recupere la base avant le post
+        List<Customer> customerBeforePost = customerRepository.findAll();
+        assertEquals(6, customerBeforePost.size());
+
+        String apiUrl = "http://localhost:8080/customer";
+        URL url = new URL(apiUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+
+        // Vérifier le code HTTP de la réponse
+        int statusCode = connection.getResponseCode();
+        assertEquals(200, statusCode);
+        
+    }
     
     }
     

@@ -1,5 +1,10 @@
 package com.jee.crud;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.AfterClass;
@@ -14,6 +19,7 @@ import com.jee.crud.repository.BookRepository;
 import com.jee.crud.repository.CommandRepository;
 import com.jee.crud.repository.CustomerRepository;
 import com.jee.crud.repository.PaymentStatusCommandRepository;
+import org.apache.http.impl.client.HttpClients;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +33,7 @@ import static org.hamcrest.Matchers.equalTo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -117,7 +124,7 @@ class CrudApplicationTests {
         String jsonResponse = response.toString();
         // Vérifier qu'il s'agit d'un JSON valide
         
-        	assertEquals("[{\"id\":1,\"name\":\"Burke Hendrix\",\"phone\":\"05 84 87 05 40\",\"email\":\"eu.elit@aol.net\",\"address\":\"5452 In Ave\",\"country\":\"Belgium\",\"city\":\"Westrem\"},{\"id\":2,\"name\":\"Zenia \",\"phone\":\"06 96 27 17 11\",\"email\":\"accumsan@protonmail.ca\",\"address\":\"9224 Commodo Road\",\"country\":\"France\",\"city\":\"Lunel\"},{\"id\":3,\"name\":\"Yvette \",\"phone\":\"07 56 05 44 74\",\"email\":\"at.augue@aol.org\",\"address\":\"P.O. Box 761, 5634 Quam. Ave\",\"country\":\"France\",\"city\":\"Strasbourg\"},{\"id\":4,\"name\":\"Anastasia \",\"phone\":\"07 84 92 54 42\",\"email\":\"facilisis.non@hotmail.org\",\"address\":\"695-635 Nisi. Road\",\"country\":\"Belgium\",\"city\":\"Corroy-le-Chteau\"},{\"id\":5,\"name\":\"Berk Spijker\",\"phone\":\"08 85 35 38 31\",\"email\":\"lacus.nulla@hotmail.org\",\"address\":\"Ap #552-5261 Non, Avenue\",\"country\":\"France\",\"city\":\"Compigne\"},{\"id\":6,\"name\":\"Rashad Kappel\",\"phone\":\"06 02 86 88 98\",\"email\":\"tellus@hotmail.edu\",\"address\":\"Ap #710-7930 Suspendisse Rd.\",\"country\":\"France\",\"city\":\"Saumur\"},{\"id\":7,\"name\":\"Damian Archambault\",\"phone\":\"04 87 64 47 92\",\"email\":\"interdum.libero.dui@protonmail.com\",\"address\":\"3301 Nonummy St.\",\"country\":\"Belgium\",\"city\":\"Vierzon\"},{\"id\":8,\"name\":\"Brent de Ruiter\",\"phone\":\"06 27 35 28 00\",\"email\":\"elit.erat.vitae@icloud.edu\",\"address\":\"580-3024 Curabitur Rd.\",\"country\":\"Belgium\",\"city\":\"Meerhout\"},{\"id\":9,\"name\":\"Quin \",\"phone\":\"09 27 29 68 52\",\"email\":\"curabitur.dictum@aol.com\",\"address\":\"578-5363 Tellus. St.\",\"country\":\"Belgium\",\"city\":\"Vannes\"},{\"id\":10,\"name\":\"Hayden \",\"phone\":\"07 45 52 27 29\",\"email\":\"eget.odio@hotmail.net\",\"address\":\"P.O. Box 341, 9923 Volutpat. Avenue\",\"country\":\"France\",\"city\":\"Noduwez\"},{\"id\":11,\"name\":\"Zena Spijker\",\"phone\":\"06 35 42 54 74\",\"email\":\"elit.erat@yahoo.ca\",\"address\":\"440-3482 Vestibulum St.\",\"country\":\"Belgium\",\"city\":\"Alenon\"},{\"id\":12,\"name\":\"Ulysses van der Bosch\",\"phone\":\"01 69 05 15 56\",\"email\":\"pellentesque.a@icloud.org\",\"address\":\"875-1836 Ut St.\",\"country\":\"Belgium\",\"city\":\"Quenast\"},{\"id\":13,\"name\":\"Gloria Rademaker\",\"phone\":\"02 37 74 68 24\",\"email\":\"erat.vivamus@outlook.com\",\"address\":\"P.O. Box 364, 9122 Eget, St.\",\"country\":\"Belgium\",\"city\":\"Bastia\"},{\"id\":14,\"name\":\"Chantale \",\"phone\":\"08 72 16 12 56\",\"email\":\"facilisis.eget@hotmail.org\",\"address\":\"698-1684 Dictum Rd.\",\"country\":\"Belgium\",\"city\":\"Reims\"},{\"id\":15,\"name\":\"Graiden van Rijn\",\"phone\":\"01 14 07 83 33\",\"email\":\"integer.urna@hotmail.couk\",\"address\":\"143-6313 Mus. Av.\",\"country\":\"Belgium\",\"city\":\"Houtave\"},{\"id\":16,\"name\":\"Axel Dijkstra\",\"phone\":\"03 15 78 51 82\",\"email\":\"lorem.vitae@google.couk\",\"address\":\"Ap #225-1995 Eros Av.\",\"country\":\"France\",\"city\":\"Tintigny\"},{\"id\":17,\"name\":\"Madaline de Jonge\",\"phone\":\"05 72 47 59 10\",\"email\":\"morbi.vehicula@google.edu\",\"address\":\"Ap #765-6281 A St.\",\"country\":\"Belgium\",\"city\":\"Daknam\"},{\"id\":18,\"name\":\"Luke \",\"phone\":\"05 35 58 51 13\",\"email\":\"neque@yahoo.com\",\"address\":\"889-7850 Nonummy St.\",\"country\":\"France\",\"city\":\"Pau\"},{\"id\":19,\"name\":\"Jonah \",\"phone\":\"06 15 32 12 68\",\"email\":\"dui.semper.et@protonmail.ca\",\"address\":\"5009 Magnis St.\",\"country\":\"Belgium\",\"city\":\"Dole\"},{\"id\":20,\"name\":\"Gavin van der Graaf\",\"phone\":\"06 75 85 86 30\",\"email\":\"nostra@aol.org\",\"address\":\"Ap #483-7945 Ultrices Road\",\"country\":\"France\",\"city\":\"Troyes\"},{\"id\":21,\"name\":\"Aphrodite \",\"phone\":\"05 63 75 63 08\",\"email\":\"tempor.bibendum@icloud.net\",\"address\":\"Ap #717-1130 Tellus Ave\",\"country\":\"Belgium\",\"city\":\"Orp-Jauche\"},{\"id\":22,\"name\":\"Elton \",\"phone\":\"01 72 88 35 40\",\"email\":\"pharetra.ut@hotmail.ca\",\"address\":\"248-2866 Erat Avenue\",\"country\":\"Belgium\",\"city\":\"Sint-Amandsberg\"},{\"id\":23,\"name\":\"Palmer Bakhuizen\",\"phone\":\"08 11 31 42 41\",\"email\":\"commodo.hendrerit@outlook.couk\",\"address\":\"Ap #116-9936 Eu Rd.\",\"country\":\"Belgium\",\"city\":\"Sotteville-ls-Rouen\"},{\"id\":24,\"name\":\"Raya Timmermans\",\"phone\":\"08 41 10 44 38\",\"email\":\"cursus.vestibulum@protonmail.com\",\"address\":\"686-1744 Lectus Road\",\"country\":\"Belgium\",\"city\":\"Vertou\"},{\"id\":25,\"name\":\"Clinton Lachapelle\",\"phone\":\"02 53 53 45 37\",\"email\":\"vivamus.euismod.urna@aol.com\",\"address\":\"266-3129 Est Ave\",\"country\":\"France\",\"city\":\"Doel\"},{\"id\":26,\"name\":\"Lawrence \",\"phone\":\"06 81 57 51 04\",\"email\":\"neque.et@protonmail.edu\",\"address\":\"Ap #261-5281 Egestas. St.\",\"country\":\"Belgium\",\"city\":\"Gomz-Andoumont\"},{\"id\":27,\"name\":\"Oscar Villenueve\",\"phone\":\"03 07 37 44 22\",\"email\":\"et.ipsum@icloud.edu\",\"address\":\"5893 Eget St.\",\"country\":\"Belgium\",\"city\":\"Rouvreux\"},{\"id\":28,\"name\":\"Kuame \",\"phone\":\"03 25 35 78 31\",\"email\":\"duis@outlook.couk\",\"address\":\"Ap #804-1251 Ut Av.\",\"country\":\"Belgium\",\"city\":\"Orvault\"},{\"id\":29,\"name\":\"Brenna van der Velde\",\"phone\":\"06 78 36 93 28\",\"email\":\"amet@yahoo.net\",\"address\":\"Ap #817-1012 Tempor Av.\",\"country\":\"Belgium\",\"city\":\"Saintes\"},{\"id\":30,\"name\":\"Illiana Hoogendoorn\",\"phone\":\"03 44 91 14 56\",\"email\":\"magna.cras.convallis@aol.ca\",\"address\":\"177-7275 Ante. Rd.\",\"country\":\"France\",\"city\":\"Ganshoren\"}]",jsonResponse);
+        	assertEquals("[{\"id\":1,\"name\":\"Burke Hendrix\",\"phone\":\"05 84 87 05 40\",\"email\":\"eu.elit@aol.net\",\"address\":\"5452 In Ave\",\"country\":\"Belgium\",\"city\":\"Westrem\"},{\"id\":2,\"name\":\"Zenia 衣\",\"phone\":\"06 96 27 17 11\",\"email\":\"accumsan@protonmail.ca\",\"address\":\"9224 Commodo Road\",\"country\":\"France\",\"city\":\"Lunel\"},{\"id\":3,\"name\":\"Yvette 位\",\"phone\":\"07 56 05 44 74\",\"email\":\"at.augue@aol.org\",\"address\":\"P.O. Box 761, 5634 Quam. Ave\",\"country\":\"France\",\"city\":\"Strasbourg\"},{\"id\":4,\"name\":\"Anastasia 邰\",\"phone\":\"07 84 92 54 42\",\"email\":\"facilisis.non@hotmail.org\",\"address\":\"695-635 Nisi. Road\",\"country\":\"Belgium\",\"city\":\"Corroy-le-Ch‰teau\"},{\"id\":5,\"name\":\"Berk Spijker\",\"phone\":\"08 85 35 38 31\",\"email\":\"lacus.nulla@hotmail.org\",\"address\":\"Ap #552-5261 Non, Avenue\",\"country\":\"France\",\"city\":\"Compiègne\"},{\"id\":6,\"name\":\"Rashad Kappel\",\"phone\":\"06 02 86 88 98\",\"email\":\"tellus@hotmail.edu\",\"address\":\"Ap #710-7930 Suspendisse Rd.\",\"country\":\"France\",\"city\":\"Saumur\"},{\"id\":7,\"name\":\"Damian Archambault\",\"phone\":\"04 87 64 47 92\",\"email\":\"interdum.libero.dui@protonmail.com\",\"address\":\"3301 Nonummy St.\",\"country\":\"Belgium\",\"city\":\"Vierzon\"},{\"id\":8,\"name\":\"Brent de Ruiter\",\"phone\":\"06 27 35 28 00\",\"email\":\"elit.erat.vitae@icloud.edu\",\"address\":\"580-3024 Curabitur Rd.\",\"country\":\"Belgium\",\"city\":\"Meerhout\"},{\"id\":9,\"name\":\"Quin 齐\",\"phone\":\"09 27 29 68 52\",\"email\":\"curabitur.dictum@aol.com\",\"address\":\"578-5363 Tellus. St.\",\"country\":\"Belgium\",\"city\":\"Vannes\"},{\"id\":10,\"name\":\"Hayden 鞠\",\"phone\":\"07 45 52 27 29\",\"email\":\"eget.odio@hotmail.net\",\"address\":\"P.O. Box 341, 9923 Volutpat. Avenue\",\"country\":\"France\",\"city\":\"Noduwez\"},{\"id\":11,\"name\":\"Zena Spijker\",\"phone\":\"06 35 42 54 74\",\"email\":\"elit.erat@yahoo.ca\",\"address\":\"440-3482 Vestibulum St.\",\"country\":\"Belgium\",\"city\":\"Alençon\"},{\"id\":12,\"name\":\"Ulysses van der Bosch\",\"phone\":\"01 69 05 15 56\",\"email\":\"pellentesque.a@icloud.org\",\"address\":\"875-1836 Ut St.\",\"country\":\"Belgium\",\"city\":\"Quenast\"},{\"id\":13,\"name\":\"Gloria Rademaker\",\"phone\":\"02 37 74 68 24\",\"email\":\"erat.vivamus@outlook.com\",\"address\":\"P.O. Box 364, 9122 Eget, St.\",\"country\":\"Belgium\",\"city\":\"Bastia\"},{\"id\":14,\"name\":\"Chantale 龚\",\"phone\":\"08 72 16 12 56\",\"email\":\"facilisis.eget@hotmail.org\",\"address\":\"698-1684 Dictum Rd.\",\"country\":\"Belgium\",\"city\":\"Reims\"},{\"id\":15,\"name\":\"Graiden van Rijn\",\"phone\":\"01 14 07 83 33\",\"email\":\"integer.urna@hotmail.couk\",\"address\":\"143-6313 Mus. Av.\",\"country\":\"Belgium\",\"city\":\"Houtave\"},{\"id\":16,\"name\":\"Axel Dijkstra\",\"phone\":\"03 15 78 51 82\",\"email\":\"lorem.vitae@google.couk\",\"address\":\"Ap #225-1995 Eros Av.\",\"country\":\"France\",\"city\":\"Tintigny\"},{\"id\":17,\"name\":\"Madaline de Jonge\",\"phone\":\"05 72 47 59 10\",\"email\":\"morbi.vehicula@google.edu\",\"address\":\"Ap #765-6281 A St.\",\"country\":\"Belgium\",\"city\":\"Daknam\"},{\"id\":18,\"name\":\"Luke 闻\",\"phone\":\"05 35 58 51 13\",\"email\":\"neque@yahoo.com\",\"address\":\"889-7850 Nonummy St.\",\"country\":\"France\",\"city\":\"Pau\"},{\"id\":19,\"name\":\"Jonah 修\",\"phone\":\"06 15 32 12 68\",\"email\":\"dui.semper.et@protonmail.ca\",\"address\":\"5009 Magnis St.\",\"country\":\"Belgium\",\"city\":\"Dole\"},{\"id\":20,\"name\":\"Gavin van der Graaf\",\"phone\":\"06 75 85 86 30\",\"email\":\"nostra@aol.org\",\"address\":\"Ap #483-7945 Ultrices Road\",\"country\":\"France\",\"city\":\"Troyes\"},{\"id\":21,\"name\":\"Aphrodite 钱\",\"phone\":\"05 63 75 63 08\",\"email\":\"tempor.bibendum@icloud.net\",\"address\":\"Ap #717-1130 Tellus Ave\",\"country\":\"Belgium\",\"city\":\"Orp-Jauche\"},{\"id\":22,\"name\":\"Elton 梁\",\"phone\":\"01 72 88 35 40\",\"email\":\"pharetra.ut@hotmail.ca\",\"address\":\"248-2866 Erat Avenue\",\"country\":\"Belgium\",\"city\":\"Sint-Amandsberg\"},{\"id\":23,\"name\":\"Palmer Bakhuizen\",\"phone\":\"08 11 31 42 41\",\"email\":\"commodo.hendrerit@outlook.couk\",\"address\":\"Ap #116-9936 Eu Rd.\",\"country\":\"Belgium\",\"city\":\"Sotteville-lès-Rouen\"},{\"id\":24,\"name\":\"Raya Timmermans\",\"phone\":\"08 41 10 44 38\",\"email\":\"cursus.vestibulum@protonmail.com\",\"address\":\"686-1744 Lectus Road\",\"country\":\"Belgium\",\"city\":\"Vertou\"},{\"id\":25,\"name\":\"Clinton Lachapelle\",\"phone\":\"02 53 53 45 37\",\"email\":\"vivamus.euismod.urna@aol.com\",\"address\":\"266-3129 Est Ave\",\"country\":\"France\",\"city\":\"Doel\"},{\"id\":26,\"name\":\"Lawrence 勾\",\"phone\":\"06 81 57 51 04\",\"email\":\"neque.et@protonmail.edu\",\"address\":\"Ap #261-5281 Egestas. St.\",\"country\":\"Belgium\",\"city\":\"GomzŽ-Andoumont\"},{\"id\":27,\"name\":\"Oscar Villenueve\",\"phone\":\"03 07 37 44 22\",\"email\":\"et.ipsum@icloud.edu\",\"address\":\"5893 Eget St.\",\"country\":\"Belgium\",\"city\":\"Rouvreux\"},{\"id\":28,\"name\":\"Kuame 应\",\"phone\":\"03 25 35 78 31\",\"email\":\"duis@outlook.couk\",\"address\":\"Ap #804-1251 Ut Av.\",\"country\":\"Belgium\",\"city\":\"Orvault\"},{\"id\":29,\"name\":\"Brenna van der Velde\",\"phone\":\"06 78 36 93 28\",\"email\":\"amet@yahoo.net\",\"address\":\"Ap #817-1012 Tempor Av.\",\"country\":\"Belgium\",\"city\":\"Saintes\"},{\"id\":30,\"name\":\"Illiana Hoogendoorn\",\"phone\":\"03 44 91 14 56\",\"email\":\"magna.cras.convallis@aol.ca\",\"address\":\"177-7275 Ante. Rd.\",\"country\":\"France\",\"city\":\"Ganshoren\"}]",jsonResponse);
         	System.out.println("Le test Author réussi !");
         	
         }
@@ -360,6 +367,75 @@ class CrudApplicationTests {
         int statusCode = connection.getResponseCode();
         assertEquals(200, statusCode);
         
+    }
+
+    @Test
+    public void testAddCommand() throws IOException {
+        List<Command> commandBeforePost = commandRepository.findAll();
+        assertEquals(15, commandBeforePost.size());
+
+        CloseableHttpClient client = HttpClients.createDefault();
+
+        //Créer une nouvelle client à ajouter
+        PaymentStatusCommand paymentStatusCommandById = paymentStatusCommandRepository.findById(4).orElse(null);
+        Book bookById = bookRepository.findBookByTitle("est. Mauris eu turpis.");
+        Customer customerById = customerRepository.findById(6L).orElse(null);
+
+        //Convertir l'objet Customer en JSON
+        String json = "{\"id\":" + 16 + ",\"paymentStatusCommand\":" + 7 + ",\"book\":" + 7 + ",\"quantity\":" + 3 + ",\"customer\":" + 1 + "}";
+
+        //Envoyer une requête POST à l'API avec le JSON dans le corps
+        HttpPost request = new HttpPost("http://localhost:8080/command/new");
+        StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
+        request.setEntity(entity);
+        CloseableHttpResponse response = client.execute(request);
+
+        //Vérifier le code HTTP de la réponse
+        assertEquals(200, response.getStatusLine().getStatusCode());
+
+        //Vérifier que la commande a bien été ajoutée à la base de données
+        List<Command> commandAfterPost = commandRepository.findAll();
+        assertEquals(16, commandAfterPost.size());
+
+        //On supprime le customer qui vient d'être ajouté
+        commandRepository.deleteById(commandAfterPost.get(commandAfterPost.size()-1).getId());
+
+        System.out.println("Le test addCommand a réussi !");
+    }
+
+    @Test
+    public void testAddCustomer() throws IOException {
+        List<Customer> customerBeforePost = customerRepository.findAll();
+        assertEquals(6, customerBeforePost.size());
+
+        CloseableHttpClient client = HttpClients.createDefault();
+
+        //Créer un nouveau client à ajouter
+        Customer newCustomer = new Customer("Jio Lop", "Marc.jean@gmail.com", "10 rue des Fleurs","Lille", "France");
+
+        //Convertir l'objet Customer en JSON
+        String json = "{\"name\":\"" + newCustomer.getName() + "\",\"email\":\"" + newCustomer.getEmail() + "\",\"address\":\"" + newCustomer.getAddress() + "\",\"city\":\"" + newCustomer.getCity() + "\",\"country\":\"" + newCustomer.getCountry() + "\"}";
+
+
+        //Envoyer une requête POST à l'API avec le JSON dans le corps
+        HttpPost request = new HttpPost("http://localhost:8080/customer/new");
+        StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
+        request.setEntity(entity);
+        CloseableHttpResponse response = client.execute(request);
+
+        //Vérifier le code HTTP de la réponse
+        assertEquals(200, response.getStatusLine().getStatusCode());
+
+        //Vérifier que le client a bien été ajouté à la base de données
+        List<Customer> customerAfterPost = customerRepository.findAll();
+        assertEquals(7, customerAfterPost.size());
+        assertEquals(newCustomer.getName(), customerAfterPost.get(customerAfterPost.size()-1).getName());
+        assertEquals(newCustomer.getEmail(), customerAfterPost.get(customerAfterPost.size()-1).getEmail());
+
+        //On supprime le customer qui vient d'être ajouté
+        customerRepository.deleteById(customerAfterPost.get(customerAfterPost.size()-1).getId());
+
+        System.out.println("Le test addCustomer réussi !");
     }
     
     }

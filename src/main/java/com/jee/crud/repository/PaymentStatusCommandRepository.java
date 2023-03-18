@@ -11,4 +11,5 @@ public interface PaymentStatusCommandRepository extends JpaRepository<PaymentSta
 	
 	@Query(value = "SELECT * FROM payment_status_command p WHERE p.state=false", nativeQuery = true)
 	List<PaymentStatusCommand> findAllPayment();
+
 }

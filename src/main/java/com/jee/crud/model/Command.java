@@ -48,7 +48,7 @@ public class Command {
     }
 
     public PaymentStatusCommand getPaymentStatusCommand() {
-        return paymentStatusCommand;
+        return this.paymentStatusCommand;
     }
 
     public void setPaymentStatusCommand(PaymentStatusCommand paymentStatusCommand) {
@@ -56,7 +56,7 @@ public class Command {
     }
 
     public Book getBook() {
-        return book;
+        return this.book;
     }
 
     public void setBook(Book book) {
